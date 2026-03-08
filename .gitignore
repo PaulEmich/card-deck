@@ -1,0 +1,14 @@
+.idea
+composer.lock
+vendor
+
+# PHP-CS-Fixer
+.php-cs-fixer.cache
+
+# PHPStan
+.phpstan.cache
+
+# Pest / PHPUnit
+.phpunit.cache
+.phpunit.result.cache
+coverage
