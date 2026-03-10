@@ -6,13 +6,13 @@ use PaulEmich\CardDeck\DeckBuilder;
 use PaulEmich\CardDeck\Standard\StandardDeckProvider;
 
 it('has 52 cards', function () {
-    $deck = DeckBuilder::withStandard()->build();
+    $deck = DeckBuilder::standard()->build();
 
     expect($deck->count())->toBe(52);
 });
 
 it('can be multiplied with times parameter', function () {
-    $deck = DeckBuilder::withStandard(times: 6)->build();
+    $deck = DeckBuilder::standard(times: 6)->build();
 
     expect($deck->count())->toBe(312);
 });

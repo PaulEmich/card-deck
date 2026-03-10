@@ -38,14 +38,17 @@ class UnoCard extends Card
 
     private function buildIdentifier(): string
     {
-        if ($this->type === UnoCardType::Number) {
-            return $this->color->value . '-' . $this->number;
-        }
-
         if ($this->isWild()) {
             return $this->type->value;
         }
 
-        return $this->color->value . '-' . $this->type->value;
+        /** @var Color $color */
+        $color = $this->color;
+
+        if ($this->type === UnoCardType::Number) {
+            return $color->value . '-' . $this->number;
+        }
+
+        return $color->value . '-' . $this->type->value;
     }
 }

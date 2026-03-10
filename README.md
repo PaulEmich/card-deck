@@ -19,7 +19,7 @@ composer require paulemich/card-deck
 ```php
 use PaulEmich\CardDeck\DeckBuilder;
 
-$deck = DeckBuilder::withStandard()->build();
+$deck = DeckBuilder::standard()->build();
 
 $card = $deck->draw();
 $card->getSuit();  // Suit::Hearts
@@ -31,7 +31,7 @@ $card->getRank();  // Rank::Ace
 ```php
 use PaulEmich\CardDeck\DeckBuilder;
 
-$deck = DeckBuilder::withUno()->build();
+$deck = DeckBuilder::uno()->build();
 
 $card = $deck->draw();
 $card->getType();   // UnoCardType::Number
@@ -48,7 +48,7 @@ Use the `times` parameter to multiply a deck:
 use PaulEmich\CardDeck\DeckBuilder;
 
 // 6-deck shoe for Blackjack (312 cards)
-$deck = DeckBuilder::withStandard(times: 6)->build();
+$deck = DeckBuilder::standard(times: 6)->build();
 ```
 
 ### Mixed Decks
@@ -71,13 +71,28 @@ $deck = (new DeckBuilder())
 Implement `DeckProvider` for reusable deck configurations:
 
 ```php
+use PaulEmich\CardDeck\Card;
 use PaulEmich\CardDeck\DeckProvider;
 
+class TarotCard extends Card
+{
+    public function __construct(
+        private readonly string $arcana,
+        private readonly int $number,
+    ) {
+        parent::__construct($arcana . '-' . $number);
+    }
+}
+
+/**
+ * @implements DeckProvider<TarotCard>
+ */
 class TarotDeckProvider implements DeckProvider
 {
+    /** @return TarotCard[] */
     public function getCards(): array
     {
-        // Return array of cards
+        // Return array of TarotCard
     }
 }
 

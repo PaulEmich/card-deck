@@ -13,17 +13,20 @@ class DeckBuilder
     /** @var Card[] */
     private array $cards = [];
 
-    public static function withStandard(int $times = 1): self
+    public static function standard(int $times = 1): self
     {
         return (new self())->withDeck(new StandardDeckProvider(), $times);
     }
 
-    public static function withUno(int $times = 1): self
+    public static function uno(int $times = 1): self
     {
         return (new self())->withDeck(new UnoDeckProvider(), $times);
     }
 
-    /** @param DeckProvider|Closure(self): void $provider */
+    /**
+     * @template TCard of Card
+     * @param DeckProvider<TCard>|Closure(self): void $provider
+     */
     public function withDeck(DeckProvider|Closure $provider, int $times = 1): self
     {
         if ($provider instanceof Closure) {
@@ -32,7 +35,7 @@ class DeckBuilder
             }
         } else {
             for ($i = 0; $i < $times; $i++) {
-                $this->addCards($provider->getCards());
+                $this->cards = [...$this->cards, ...$provider->getCards()];
             }
         }
 
@@ -49,13 +52,12 @@ class DeckBuilder
     /** @param Card[] $cards */
     public function addCards(array $cards): self
     {
-        foreach ($cards as $card) {
-            $this->addCard($card);
-        }
+        $this->cards = [...$this->cards, ...$cards];
 
         return $this;
     }
 
+    /** @return Deck<Card> */
     public function build(): Deck
     {
         return new Deck($this->cards);

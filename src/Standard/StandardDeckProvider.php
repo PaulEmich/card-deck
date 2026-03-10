@@ -6,6 +6,9 @@ namespace PaulEmich\CardDeck\Standard;
 
 use PaulEmich\CardDeck\DeckProvider;
 
+/**
+ * @implements DeckProvider<StandardCard>
+ */
 class StandardDeckProvider implements DeckProvider
 {
     /** @return StandardCard[] */

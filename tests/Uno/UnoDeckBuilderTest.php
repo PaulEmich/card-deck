@@ -6,13 +6,13 @@ use PaulEmich\CardDeck\DeckBuilder;
 use PaulEmich\CardDeck\Uno\UnoDeckProvider;
 
 it('has 108 cards', function () {
-    $deck = DeckBuilder::withUno()->build();
+    $deck = DeckBuilder::uno()->build();
 
     expect($deck->count())->toBe(108);
 });
 
 it('can be multiplied with times parameter', function () {
-    $deck = DeckBuilder::withUno(times: 2)->build();
+    $deck = DeckBuilder::uno(times: 2)->build();
 
     expect($deck->count())->toBe(216);
 });

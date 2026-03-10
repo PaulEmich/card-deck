@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace PaulEmich\CardDeck;
 
+/**
+ * @template T of Card
+ */
 class Deck
 {
-    /** @param Card[] $cards */
+    /** @param T[] $cards */
     public function __construct(
         private array $cards = [],
     ) {}
 
-    /** @return Card[] */
+    /** @return T[] */
     public function getCards(): array
     {
         return $this->cards;
@@ -22,6 +25,7 @@ class Deck
         return count($this->cards);
     }
 
+    /** @return T|null */
     public function draw(): ?Card
     {
         return array_shift($this->cards);

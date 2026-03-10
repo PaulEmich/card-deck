@@ -6,6 +6,9 @@ namespace PaulEmich\CardDeck\Uno;
 
 use PaulEmich\CardDeck\DeckProvider;
 
+/**
+ * @implements DeckProvider<UnoCard>
+ */
 class UnoDeckProvider implements DeckProvider
 {
     /** @return UnoCard[] */
