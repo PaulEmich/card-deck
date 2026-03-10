@@ -5,15 +5,17 @@ declare(strict_types=1);
 use PaulEmich\CardDeck\Card;
 use PaulEmich\CardDeck\Deck;
 use PaulEmich\CardDeck\DeckBuilder;
+use PaulEmich\CardDeck\Standard\StandardDeckProvider;
+use PaulEmich\CardDeck\Uno\UnoDeckProvider;
 
-test('builder creates empty deck by default', function () {
+it('creates an empty deck by default', function () {
     $deck = (new DeckBuilder())->build();
 
     expect($deck)->toBeInstanceOf(Deck::class)
         ->and($deck->isEmpty())->toBeTrue();
 });
 
-test('builder can add single card', function () {
+it('can add a single card', function () {
     $deck = (new DeckBuilder())
         ->addCard(new Card('ace-spades'))
         ->build();
@@ -21,7 +23,7 @@ test('builder can add single card', function () {
     expect($deck->count())->toBe(1);
 });
 
-test('builder can add multiple cards', function () {
+it('can add multiple cards', function () {
     $deck = (new DeckBuilder())
         ->addCards([
             new Card('ace-spades'),
@@ -33,7 +35,7 @@ test('builder can add multiple cards', function () {
     expect($deck->count())->toBe(3);
 });
 
-test('builder can be reset', function () {
+it('can be reset', function () {
     $builder = new DeckBuilder();
     $builder->addCard(new Card('ace-spades'));
     $builder->reset();
@@ -43,10 +45,49 @@ test('builder can be reset', function () {
     expect($deck->isEmpty())->toBeTrue();
 });
 
-test('builder is fluent', function () {
+it('is fluent', function () {
     $builder = new DeckBuilder();
 
     expect($builder->addCard(new Card('ace-spades')))->toBe($builder)
         ->and($builder->addCards([new Card('king-hearts')]))->toBe($builder)
         ->and($builder->reset())->toBe($builder);
+});
+
+it('accepts a closure in withDeck', function () {
+    $deck = (new DeckBuilder())
+        ->withDeck(function (DeckBuilder $builder) {
+            $builder->addCard(new Card('custom-1'));
+            $builder->addCard(new Card('custom-2'));
+        })
+        ->build();
+
+    expect($deck->count())->toBe(2);
+});
+
+it('supports times parameter with closure', function () {
+    $deck = (new DeckBuilder())
+        ->withDeck(function (DeckBuilder $builder) {
+            $builder->addCard(new Card('joker'));
+        }, times: 4)
+        ->build();
+
+    expect($deck->count())->toBe(4);
+});
+
+it('can mix different deck types', function () {
+    $deck = (new DeckBuilder())
+        ->withDeck(new StandardDeckProvider())
+        ->withDeck(new UnoDeckProvider())
+        ->build();
+
+    expect($deck->count())->toBe(160);
+});
+
+it('can mix different deck types with different times', function () {
+    $deck = (new DeckBuilder())
+        ->withDeck(new StandardDeckProvider(), times: 2)
+        ->withDeck(new UnoDeckProvider(), times: 1)
+        ->build();
+
+    expect($deck->count())->toBe(212);
 });

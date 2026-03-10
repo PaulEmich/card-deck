@@ -14,46 +14,90 @@ composer require paulemich/card-deck
 
 ## Usage
 
-### Basic Usage
+### Standard 52-Card Deck
 
 ```php
-use PaulEmich\CardDeck\Card;
 use PaulEmich\CardDeck\DeckBuilder;
 
-$deck = (new DeckBuilder())
-    ->addCard(new Card('ace-spades'))
-    ->addCard(new Card('king-hearts'))
-    ->build();
+$deck = DeckBuilder::withStandard()->build();
 
 $card = $deck->draw();
+$card->getSuit();  // Suit::Hearts
+$card->getRank();  // Rank::Ace
 ```
 
-### Extending Cards
-
-Create custom card types by extending the base `Card` class:
+### Uno Deck
 
 ```php
-use PaulEmich\CardDeck\Card;
+use PaulEmich\CardDeck\DeckBuilder;
 
-class StandardCard extends Card
+$deck = DeckBuilder::withUno()->build();
+
+$card = $deck->draw();
+$card->getType();   // UnoCardType::Number
+$card->getColor();  // Color::Red
+$card->getNumber(); // 5
+$card->isWild();    // false
+```
+
+### Multiple Decks
+
+Use the `times` parameter to multiply a deck:
+
+```php
+use PaulEmich\CardDeck\DeckBuilder;
+
+// 6-deck shoe for Blackjack (312 cards)
+$deck = DeckBuilder::withStandard(times: 6)->build();
+```
+
+### Mixed Decks
+
+Combine different deck types with individual multipliers:
+
+```php
+use PaulEmich\CardDeck\DeckBuilder;
+use PaulEmich\CardDeck\Standard\StandardDeckProvider;
+use PaulEmich\CardDeck\Uno\UnoDeckProvider;
+
+$deck = (new DeckBuilder())
+    ->withDeck(new StandardDeckProvider(), times: 2)
+    ->withDeck(new UnoDeckProvider(), times: 1)
+    ->build();
+```
+
+### Custom Deck Provider
+
+Implement `DeckProvider` for reusable deck configurations:
+
+```php
+use PaulEmich\CardDeck\DeckProvider;
+
+class TarotDeckProvider implements DeckProvider
 {
-    public function __construct(
-        private readonly string $suit,
-        private readonly string $rank,
-    ) {
-        parent::__construct($suit . '-' . $rank);
-    }
-
-    public function getSuit(): string
+    public function getCards(): array
     {
-        return $this->suit;
-    }
-
-    public function getRank(): string
-    {
-        return $this->rank;
+        // Return array of cards
     }
 }
+
+$deck = (new DeckBuilder())
+    ->withDeck(new TarotDeckProvider(), times: 2)
+    ->build();
+```
+
+### Custom Deck with Closure
+
+```php
+use PaulEmich\CardDeck\DeckBuilder;
+use PaulEmich\CardDeck\Card;
+
+$deck = (new DeckBuilder())
+    ->withDeck(function (DeckBuilder $builder) {
+        $builder->addCard(new Card('joker-1'));
+        $builder->addCard(new Card('joker-2'));
+    })
+    ->build();
 ```
 
 ## Development

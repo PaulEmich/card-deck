@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 use PaulEmich\CardDeck\Card;
 
-test('card has identifier', function () {
+it('has an identifier', function () {
     $card = new Card('ace-spades');
 
     expect($card->getIdentifier())->toBe('ace-spades');
 });
 
-test('cards with same identifier are equal', function () {
+it('equals another card with the same identifier', function () {
     $card1 = new Card('ace-spades');
     $card2 = new Card('ace-spades');
 
     expect($card1->equals($card2))->toBeTrue();
 });
 
-test('cards with different identifiers are not equal', function () {
+it('does not equal a card with a different identifier', function () {
     $card1 = new Card('ace-spades');
     $card2 = new Card('king-hearts');
 
