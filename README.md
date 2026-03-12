@@ -101,6 +101,57 @@ $deck = (new DeckBuilder())
     ->build();
 ```
 
+### Shuffling
+
+Use built-in shufflers or create your own:
+
+```php
+use PaulEmich\CardDeck\DeckBuilder;
+use PaulEmich\CardDeck\Shuffler\RandomShuffler;
+use PaulEmich\CardDeck\Shuffler\RiffleShuffler;
+use PaulEmich\CardDeck\Shuffler\CutShuffler;
+
+$deck = DeckBuilder::standard()
+    ->shuffle(new RandomShuffler())
+    ->build();
+```
+
+**Available shufflers:**
+- `RandomShuffler` - Fisher-Yates algorithm (true random)
+- `RiffleShuffler` - Splits deck, interleaves halves
+- `CutShuffler` - Cuts at random point, swaps halves
+- `OverhandShuffler` - Takes chunks from top, reorders
+
+### Shuffle Chains
+
+Combine shufflers and repeat the entire chain:
+
+```php
+use PaulEmich\CardDeck\Shuffler\ShuffleChain;
+use PaulEmich\CardDeck\Shuffler\CutShuffler;
+use PaulEmich\CardDeck\Shuffler\RiffleShuffler;
+
+$shuffler = (new ShuffleChain())
+    ->then(new CutShuffler())
+    ->then(new RiffleShuffler())
+    ->then(new CutShuffler())
+    ->repeat(10);
+
+$deck = DeckBuilder::standard(times: 6)
+    ->shuffle($shuffler)
+    ->build();
+```
+
+Or use the static factory:
+
+```php
+$shuffler = ShuffleChain::create([
+    new CutShuffler(),
+    new RiffleShuffler(),
+    new CutShuffler(),
+])->repeat(10);
+```
+
 ### Custom Deck with Closure
 
 ```php

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PaulEmich\CardDeck;
 
 use Closure;
+use PaulEmich\CardDeck\Shuffler\Shuffler;
 use PaulEmich\CardDeck\Standard\StandardDeckProvider;
 use PaulEmich\CardDeck\Uno\UnoDeckProvider;
 
@@ -53,6 +54,13 @@ class DeckBuilder
     public function addCards(array $cards): self
     {
         $this->cards = [...$this->cards, ...$cards];
+
+        return $this;
+    }
+
+    public function shuffle(Shuffler $shuffler): self
+    {
+        $this->cards = $shuffler->shuffle($this->cards);
 
         return $this;
     }
