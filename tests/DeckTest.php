@@ -6,12 +6,7 @@ use PaulEmich\CardDeck\Card;
 use PaulEmich\CardDeck\Deck;
 
 it('can be created with cards', function () {
-    $cards = [
-        new Card('ace-spades'),
-        new Card('king-hearts'),
-    ];
-
-    $deck = new Deck($cards);
+    $deck = new Deck([new Card('ace-spades'), new Card('king-hearts')]);
 
     expect($deck->count())->toBe(2);
 });
@@ -23,37 +18,27 @@ it('can be created empty', function () {
         ->and($deck->isEmpty())->toBeTrue();
 });
 
-it('draws the first card and removes it', function () {
-    $deck = new Deck([
-        new Card('ace-spades'),
-        new Card('king-hearts'),
-    ]);
+it('returns all cards in order', function () {
+    $cards = [new Card('ace-spades'), new Card('king-hearts')];
 
-    $card = $deck->draw();
+    $returned = (new Deck($cards))->getCards();
 
-    expect($card->getIdentifier())->toBe('ace-spades')
-        ->and($deck->count())->toBe(1);
+    expect($returned[0]->getIdentifier())->toBe('ace-spades')
+        ->and($returned[1]->getIdentifier())->toBe('king-hearts');
+});
+
+it('draws cards in order', function () {
+    $deck = new Deck([new Card('ace-spades'), new Card('king-hearts')]);
+
+    expect($deck->draw()->getIdentifier())->toBe('ace-spades')
+        ->and($deck->draw()->getIdentifier())->toBe('king-hearts')
+        ->and($deck->count())->toBe(0);
 });
 
 it('returns null when drawing from an empty deck', function () {
-    $deck = new Deck();
-
-    expect($deck->draw())->toBeNull();
+    expect((new Deck())->draw())->toBeNull();
 });
 
 it('is not empty when it has cards', function () {
-    $deck = new Deck([new Card('ace-spades')]);
-
-    expect($deck->isEmpty())->toBeFalse();
-});
-
-it('returns all cards', function () {
-    $cards = [
-        new Card('ace-spades'),
-        new Card('king-hearts'),
-    ];
-
-    $deck = new Deck($cards);
-
-    expect($deck->getCards())->toHaveCount(2);
+    expect((new Deck([new Card('ace-spades')]))->isEmpty())->toBeFalse();
 });

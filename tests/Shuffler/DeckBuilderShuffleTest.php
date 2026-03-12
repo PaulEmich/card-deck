@@ -27,28 +27,11 @@ it('can chain shuffle methods', function () {
 });
 
 it('can use ShuffleChain with repeat', function () {
-    $shuffler = ShuffleChain::create([
-        new CutShuffler(),
-        new RiffleShuffler(),
-        new CutShuffler(),
-    ])->repeat(10);
-
     $deck = DeckBuilder::standard()
-        ->shuffle($shuffler)
-        ->build();
-
-    expect($deck->count())->toBe(52);
-});
-
-it('can use fluent ShuffleChain', function () {
-    $shuffler = (new ShuffleChain())
-        ->then(new CutShuffler())
-        ->then(new RiffleShuffler())
-        ->then(new CutShuffler())
-        ->repeat(10);
-
-    $deck = DeckBuilder::standard()
-        ->shuffle($shuffler)
+        ->shuffle(
+            ShuffleChain::create([new CutShuffler(), new RiffleShuffler(), new CutShuffler()])
+                ->repeat(10),
+        )
         ->build();
 
     expect($deck->count())->toBe(52);

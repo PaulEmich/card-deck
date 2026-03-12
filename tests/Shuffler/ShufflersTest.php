@@ -7,51 +7,33 @@ use PaulEmich\CardDeck\Shuffler\CutShuffler;
 use PaulEmich\CardDeck\Shuffler\OverhandShuffler;
 use PaulEmich\CardDeck\Shuffler\RandomShuffler;
 use PaulEmich\CardDeck\Shuffler\RiffleShuffler;
+use PaulEmich\CardDeck\Shuffler\Shuffler;
 
-it('RandomShuffler preserves all cards', function () {
-    $cards = array_map(fn($i) => new Card((string) $i), range(1, 52));
+dataset('shufflers', [
+    'Random'   => fn () => new RandomShuffler(),
+    'Riffle'   => fn () => new RiffleShuffler(),
+    'Cut'      => fn () => new CutShuffler(),
+    'Overhand' => fn () => new OverhandShuffler(),
+]);
 
-    $result = (new RandomShuffler())->shuffle($cards);
+it('preserves all cards', function (Shuffler $shuffler) {
+    $cards = array_map(fn ($i) => new Card((string) $i), range(1, 52));
+    $result = $shuffler->shuffle($cards);
 
-    expect($result)->toHaveCount(52);
-});
+    $sortedIds = function (array $cards): array {
+        $ids = array_map(fn (Card $c) => $c->getIdentifier(), $cards);
+        sort($ids);
 
-it('RiffleShuffler preserves all cards', function () {
-    $cards = array_map(fn($i) => new Card((string) $i), range(1, 52));
+        return $ids;
+    };
 
-    $result = (new RiffleShuffler())->shuffle($cards);
+    expect($result)->toHaveCount(52)
+        ->and($sortedIds($result))->toBe($sortedIds($cards));
+})->with('shufflers');
 
-    expect($result)->toHaveCount(52);
-});
+it('returns a single card unchanged', function (Shuffler $shuffler) {
+    $result = $shuffler->shuffle([new Card('only-card')]);
 
-it('CutShuffler preserves all cards', function () {
-    $cards = array_map(fn($i) => new Card((string) $i), range(1, 52));
-
-    $result = (new CutShuffler())->shuffle($cards);
-
-    expect($result)->toHaveCount(52);
-});
-
-it('OverhandShuffler preserves all cards', function () {
-    $cards = array_map(fn($i) => new Card((string) $i), range(1, 52));
-
-    $result = (new OverhandShuffler())->shuffle($cards);
-
-    expect($result)->toHaveCount(52);
-});
-
-it('CutShuffler handles small decks', function () {
-    $cards = [new Card('1')];
-
-    $result = (new CutShuffler())->shuffle($cards);
-
-    expect($result)->toHaveCount(1);
-});
-
-it('RiffleShuffler handles small decks', function () {
-    $cards = [new Card('1')];
-
-    $result = (new RiffleShuffler())->shuffle($cards);
-
-    expect($result)->toHaveCount(1);
-});
+    expect($result)->toHaveCount(1)
+        ->and($result[0]->getIdentifier())->toBe('only-card');
+})->with('shufflers');
