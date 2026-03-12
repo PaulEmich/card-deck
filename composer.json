@@ -3,6 +3,12 @@
     "description": "A card deck library with modular shufflers",
     "type": "library",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Paul Emich"
+        }
+    ],
+    "keywords": ["card", "deck", "shuffle", "blackjack", "uno", "cards", "game"],
     "require": {
         "php": "^8.1"
     },
@@ -35,6 +41,6 @@
             "pestphp/pest-plugin": true
         }
     },
-    "minimum-stability" : "dev",
+    "minimum-stability" : "stable",
     "prefer-stable" : true
 }
