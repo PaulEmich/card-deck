@@ -18,13 +18,12 @@ class OverhandShuffler implements Shuffler
             return $cards;
         }
 
-        $result = [];
+        $chunks = [];
 
         while ($cards !== []) {
-            $chunk = array_splice($cards, 0, random_int(1, min(5, count($cards))));
-            $result = [...$chunk, ...$result];
+            $chunks[] = array_splice($cards, 0, random_int(1, min(5, count($cards))));
         }
 
-        return $result;
+        return array_merge(...array_reverse($chunks));
     }
 }

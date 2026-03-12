@@ -7,17 +7,19 @@ namespace PaulEmich\CardDeck;
 /**
  * @template T of Card
  */
-class Deck
+class Deck implements \Countable
 {
     /** @param T[] $cards */
     public function __construct(
         private array $cards = [],
-    ) {}
+    ) {
+        $this->cards = array_reverse($cards);
+    }
 
     /** @return T[] */
     public function getCards(): array
     {
-        return $this->cards;
+        return array_reverse($this->cards);
     }
 
     public function count(): int
@@ -28,7 +30,7 @@ class Deck
     /** @return T|null */
     public function draw(): ?Card
     {
-        return array_shift($this->cards);
+        return array_pop($this->cards);
     }
 
     public function isEmpty(): bool
